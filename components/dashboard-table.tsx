@@ -53,8 +53,8 @@ export function DashboardTable({ reviews, needsAttention = false }: DashboardTab
     <div className="space-y-4">
       {/* Filters - only show when NOT in needsAttention mode */}
       {!needsAttention && (
-        <div className="flex gap-4">
-          <div className="w-48">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="w-full sm:w-48">
             <label className="text-sm font-medium mb-2 block">Risk Level</label>
             <Select value={riskLevelFilter} onValueChange={setRiskLevelFilter}>
               <SelectTrigger>
@@ -69,7 +69,7 @@ export function DashboardTable({ reviews, needsAttention = false }: DashboardTab
             </Select>
           </div>
 
-          <div className="w-48">
+          <div className="w-full sm:w-48">
             <label className="text-sm font-medium mb-2 block">Star Rating</label>
             <Select value={ratingFilter} onValueChange={setRatingFilter}>
               <SelectTrigger>
@@ -102,45 +102,47 @@ export function DashboardTable({ reviews, needsAttention = false }: DashboardTab
       </div>
 
       {/* Table */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Star Rating</TableHead>
-            <TableHead>Review Text</TableHead>
-            <TableHead>Date</TableHead>
-            <TableHead>Risk Level</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredReviews.length === 0 ? (
+      <div className="rounded-md border overflow-x-auto">
+        <Table>
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={4} className="text-center text-muted-foreground">
-                No reviews found
-              </TableCell>
+              <TableHead className="whitespace-nowrap">Star Rating</TableHead>
+              <TableHead className="min-w-[200px] sm:min-w-[300px]">Review Text</TableHead>
+              <TableHead className="whitespace-nowrap">Date</TableHead>
+              <TableHead className="whitespace-nowrap">Risk Level</TableHead>
             </TableRow>
-          ) : (
-            filteredReviews.map((review) => (
-              <TableRow key={review.id}>
-                <TableCell>
-                  <div className="flex items-center gap-1">
-                    <span className="text-yellow-500">★</span>
-                    <span>{review.rating}</span>
-                  </div>
-                </TableCell>
-                <TableCell className="max-w-2xl">
-                  <div className="line-clamp-3">{review.text}</div>
-                </TableCell>
-                <TableCell className="whitespace-nowrap">
-                  {new Date(review.date).toLocaleDateString()}
-                </TableCell>
-                <TableCell>
-                  <RiskBadge riskLevel={review.riskLevel} />
+          </TableHeader>
+          <TableBody>
+            {filteredReviews.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={4} className="text-center text-muted-foreground">
+                  No reviews found
                 </TableCell>
               </TableRow>
-            ))
-          )}
-        </TableBody>
-      </Table>
+            ) : (
+              filteredReviews.map((review) => (
+                <TableRow key={review.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-1 whitespace-nowrap">
+                      <span className="text-yellow-500">★</span>
+                      <span>{review.rating}</span>
+                    </div>
+                  </TableCell>
+                  <TableCell className="max-w-[200px] sm:max-w-2xl">
+                    <div className="line-clamp-3 text-sm">{review.text}</div>
+                  </TableCell>
+                  <TableCell className="whitespace-nowrap text-sm">
+                    {new Date(review.date).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <RiskBadge riskLevel={review.riskLevel} />
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }

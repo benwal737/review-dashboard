@@ -1,5 +1,3 @@
-import { PrismaClient } from '@prisma/client'
-
 export type ReputationStatus = 'HEALTHY' | 'WATCH' | 'AT_RISK'
 
 export interface ReputationMetrics {
@@ -28,7 +26,8 @@ export interface ReputationMetrics {
  * Spike: low-rating count in last 7d doubled OR increased by ≥2 vs previous 7d
  */
 export async function computeReputationMetrics(
-  prisma: PrismaClient,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  prisma: any,
   businessId: string
 ): Promise<ReputationMetrics> {
   const now = new Date()

@@ -11,6 +11,7 @@ import {
 import { DashboardTable } from '@/components/dashboard-table'
 import { ReputationBadge, SpikeWarning } from '@/components/reputation-badge'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 type ReputationStatus = 'HEALTHY' | 'WATCH' | 'AT_RISK'
 
@@ -52,18 +53,6 @@ export default function DashboardPage() {
   const [reviewsLoading, setReviewsLoading] = useState(false)
   const [needsAttention, setNeedsAttention] = useState(false)
 
-  // Fetch businesses on mount
-  useEffect(() => {
-    fetchBusinesses()
-  }, [])
-
-  // Fetch reviews when business is selected or needsAttention changes
-  useEffect(() => {
-    if (selectedBusinessId) {
-      fetchReviews(selectedBusinessId)
-    }
-  }, [selectedBusinessId, fetchReviews])
-
   const fetchBusinesses = async () => {
     try {
       const response = await fetch('/api/businesses')
@@ -99,6 +88,18 @@ export default function DashboardPage() {
     }
   }, [needsAttention])
 
+  // Fetch businesses on mount
+  useEffect(() => {
+    fetchBusinesses()
+  }, [])
+
+  // Fetch reviews when business is selected or needsAttention changes
+  useEffect(() => {
+    if (selectedBusinessId) {
+      fetchReviews(selectedBusinessId)
+    }
+  }, [selectedBusinessId, fetchReviews])
+
   if (loading) {
     return (
       <div className="container mx-auto py-10">
@@ -109,20 +110,25 @@ export default function DashboardPage() {
 
   if (businesses.length === 0) {
     return (
-      <div className="container mx-auto py-8 px-4 max-w-7xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Customer Feedback Dashboard</h1>
-          <p className="text-muted-foreground">
-            Monitor business reputation based on star ratings and identify high-risk reviews
-          </p>
+      <div className="container mx-auto py-4 sm:py-8 px-4 max-w-7xl">
+        <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-start justify-between gap-4">
+          <div className="flex-1">
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2">Customer Feedback Dashboard</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Monitor business reputation based on star ratings and identify high-risk reviews
+            </p>
+          </div>
+          <div className="sm:shrink-0">
+            <ThemeToggle />
+          </div>
         </div>
 
-        <div className="mt-8 p-8 border rounded-lg bg-card shadow-sm max-w-2xl">
-          <h2 className="text-xl font-semibold mb-3">No Data Found</h2>
+        <div className="mt-6 sm:mt-8 p-4 sm:p-8 border rounded-lg bg-card shadow-sm max-w-2xl">
+          <h2 className="text-lg sm:text-xl font-semibold mb-3">No Data Found</h2>
           <p className="text-sm text-muted-foreground mb-4">
             Import the Yelp dataset to get started:
           </p>
-          <code className="block p-4 bg-muted rounded-md text-sm font-mono">
+          <code className="block p-3 sm:p-4 bg-muted rounded-md text-xs sm:text-sm font-mono overflow-x-auto">
             npm run import:yelp
           </code>
           <p className="text-sm text-muted-foreground mt-4">
@@ -136,20 +142,25 @@ export default function DashboardPage() {
   const selectedBusiness = businesses.find(b => b.id === selectedBusinessId)
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-7xl">
+    <div className="container mx-auto py-4 sm:py-8 px-4 max-w-7xl">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Customer Feedback Dashboard</h1>
-        <p className="text-muted-foreground">
-          Monitor business reputation based on star ratings and identify high-risk reviews
-        </p>
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-start justify-between gap-4">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold mb-2">Customer Feedback Dashboard</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
+            Monitor business reputation based on star ratings and identify high-risk reviews
+          </p>
+        </div>
+        <div className="sm:shrink-0">
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Business selector */}
       <div className="mb-6">
         <label className="text-sm font-medium mb-2 block">Business</label>
         <Select value={selectedBusinessId} onValueChange={setSelectedBusinessId}>
-          <SelectTrigger className="max-w-2xl">
+          <SelectTrigger className="w-full sm:max-w-2xl">
             <SelectValue placeholder="Choose a business" />
           </SelectTrigger>
           <SelectContent>
@@ -164,11 +175,11 @@ export default function DashboardPage() {
 
       {/* Business info with reputation metrics */}
       {selectedBusiness && (
-        <div className="mb-8 p-6 border rounded-lg bg-card shadow-sm">
-          <div className="flex items-start justify-between gap-6">
-            <div className="flex-1 space-y-3">
+        <div className="mb-6 sm:mb-8 p-4 sm:p-6 border rounded-lg bg-card shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4 sm:gap-6">
+            <div className="flex-1 space-y-3 w-full">
               <div className="flex items-center gap-3 flex-wrap">
-                <h2 className="text-2xl font-semibold">{selectedBusiness.name}</h2>
+                <h2 className="text-xl sm:text-2xl font-semibold">{selectedBusiness.name}</h2>
                 <ReputationBadge status={selectedBusiness.reputationStatus} />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -183,8 +194,8 @@ export default function DashboardPage() {
                 </div>
               )}
             </div>
-            <div className="text-right shrink-0">
-              <div className="flex items-center gap-1 justify-end">
+            <div className="text-left sm:text-right shrink-0 w-full sm:w-auto">
+              <div className="flex items-center gap-1 sm:justify-end">
                 <span className="text-yellow-500 text-xl">★</span>
                 <span className="text-xl font-semibold">{selectedBusiness.stars.toFixed(1)}</span>
               </div>
@@ -202,8 +213,14 @@ export default function DashboardPage() {
           variant={needsAttention ? "default" : "outline"}
           onClick={() => setNeedsAttention(!needsAttention)}
           size="lg"
+          className="w-full sm:w-auto"
         >
-          {needsAttention ? "Show All Reviews" : "Show Reviews Needing Attention"}
+          <span className="hidden sm:inline">
+            {needsAttention ? "Show All Reviews" : "Show Reviews Needing Attention"}
+          </span>
+          <span className="sm:hidden">
+            {needsAttention ? "Show All" : "Needs Attention"}
+          </span>
         </Button>
       </div>
 
