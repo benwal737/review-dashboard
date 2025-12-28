@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
-import { RiskLevel } from '@prisma/client'
+import { RiskLevel, Prisma } from '@prisma/client'
 
 /**
  * GET /api/reviews
@@ -27,7 +27,7 @@ export async function GET(request: NextRequest) {
     const needsAttention = searchParams.get('needsAttention') === 'true'
 
     // Build filter object
-    const where: any = {}
+    const where: Prisma.ReviewWhereInput = {}
 
     // Business ID filter (optional to allow fetching all reviews)
     if (businessId) {
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       }
     } else {
       // Range filters (only if exact rating not specified)
-      const ratingFilters: any = {}
+      const ratingFilters: { gte?: number; lte?: number } = {}
 
       if (minRating) {
         const min = parseInt(minRating)

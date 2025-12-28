@@ -30,7 +30,7 @@ export async function GET() {
 
     // Compute reputation metrics for each business
     const businessesWithMetrics = await Promise.all(
-      businesses.map(async (business) => {
+      businesses.map(async (business: typeof businesses[0]) => {
         const metrics = await computeReputationMetrics(prisma, business.id)
         return {
           ...business,

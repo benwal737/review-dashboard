@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import {
   Select,
   SelectContent,
@@ -62,7 +62,7 @@ export default function DashboardPage() {
     if (selectedBusinessId) {
       fetchReviews(selectedBusinessId)
     }
-  }, [selectedBusinessId, needsAttention])
+  }, [selectedBusinessId, fetchReviews])
 
   const fetchBusinesses = async () => {
     try {
@@ -80,7 +80,7 @@ export default function DashboardPage() {
     }
   }
 
-  const fetchReviews = async (businessId: string) => {
+  const fetchReviews = useCallback(async (businessId: string) => {
     setReviewsLoading(true)
     try {
       const params = new URLSearchParams({
@@ -97,7 +97,7 @@ export default function DashboardPage() {
     } finally {
       setReviewsLoading(false)
     }
-  }
+  }, [needsAttention])
 
   if (loading) {
     return (
