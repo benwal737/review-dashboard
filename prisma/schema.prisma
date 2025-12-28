@@ -1,0 +1,27 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  business  String
+  author    String
+  rating    Int
+  text      String   @db.Text
+  date      DateTime
+  sentiment String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([business])
+  @@index([sentiment])
+  @@index([rating])
+}
