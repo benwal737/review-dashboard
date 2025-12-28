@@ -10,18 +10,48 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Review {
-  id        Int      @id @default(autoincrement())
-  business  String
-  author    String
-  rating    Int
-  text      String   @db.Text
-  date      DateTime
-  sentiment String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// Risk level classification based on star ratings
+// 1-2 stars = HIGH_RISK, 3 stars = MEDIUM_RISK, 4-5 stars = LOW_RISK
+enum RiskLevel {
+  HIGH_RISK
+  MEDIUM_RISK
+  LOW_RISK
+}
 
-  @@index([business])
-  @@index([sentiment])
+// Business entity from Yelp dataset
+model Business {
+  id           String   @id // Yelp business_id
+  name         String
+  city         String
+  state        String
+  categories   String[] // Array of category strings
+  stars        Float
+  reviewCount  Int      @map("review_count")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  reviews Review[]
+
+  @@index([city])
+  @@index([state])
+  @@index([stars])
+}
+
+// Review entity from Yelp dataset with risk level based on star rating
+model Review {
+  id              String    @id // Yelp review_id
+  businessId      String    @map("business_id")
+  rating          Int
+  text            String    @db.Text
+  date            DateTime
+  riskLevel       RiskLevel @map("risk_level")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@index([businessId])
+  @@index([riskLevel])
   @@index([rating])
+  @@index([date])
 }
