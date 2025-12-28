@@ -48,34 +48,34 @@ export async function computeReputationMetrics(
 
   // Calculate lifetime average rating
   const lifetimeAvgRating = allReviews.length > 0
-    ? allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length
+    ? allReviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / allReviews.length
     : 0
 
   // Recent reviews (last 30 days)
-  const recentReviews = allReviews.filter(r => r.date >= thirtyDaysAgo)
+  const recentReviews = allReviews.filter((r: { date: Date }) => r.date >= thirtyDaysAgo)
 
   // Low-rating reviews (1-2 stars) in last 30 days
   const lowRatingRecentCount = recentReviews.filter(
-    r => r.rating <= 2
+    (r: { rating: number }) => r.rating <= 2
   ).length
 
   // Recent average rating (last 30 days)
   const recentAvgRating = recentReviews.length > 0
-    ? recentReviews.reduce((sum, r) => sum + r.rating, 0) / recentReviews.length
+    ? recentReviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / recentReviews.length
     : null
 
   // Low-rating spike detection (last 7d vs previous 7d)
-  const last7DaysReviews = allReviews.filter(r => r.date >= sevenDaysAgo)
+  const last7DaysReviews = allReviews.filter((r: { date: Date }) => r.date >= sevenDaysAgo)
   const previous7DaysReviews = allReviews.filter(
-    r => r.date >= fourteenDaysAgo && r.date < sevenDaysAgo
+    (r: { date: Date }) => r.date >= fourteenDaysAgo && r.date < sevenDaysAgo
   )
 
   const recentLowRatingCount = last7DaysReviews.filter(
-    r => r.rating <= 2
+    (r: { rating: number }) => r.rating <= 2
   ).length
 
   const previousLowRatingCount = previous7DaysReviews.filter(
-    r => r.rating <= 2
+    (r: { rating: number }) => r.rating <= 2
   ).length
 
   // Spike if doubled OR increased by at least 2

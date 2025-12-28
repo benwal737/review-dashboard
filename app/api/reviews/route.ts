@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
       LOW_RISK: 0
     }
 
-    riskCounts.forEach(item => {
+    riskCounts.forEach((item: { riskLevel: RiskLevel; _count: number }) => {
       distribution[item.riskLevel] = item._count
     })
 
